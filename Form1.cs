@@ -37,10 +37,45 @@ namespace KalkulatorValuta
             }
 
 
-            
+
 
             conn.Close();
 
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string unos = textBox1.Text;
+            string valuta = comboBox2.Text;
+            double rez;
+
+            rez=GetExchangeRates(valuta);
+            textBox2.Text = rez.ToString();
+        }
+    
+
+        private double GetExchangeRates(string valuta)
+        {
+            string upit = "select Value from Currencies where Name=@valuta";
+            SqlConnection conn = new SqlConnection(ConnString);
+            double tecaj = 0;
+            conn.Open();
+
+            SqlCommand command = new SqlCommand(upit, conn);
+
+            command.Parameters.AddWithValue("@valuta", valuta);
+
+            object result=command.ExecuteScalar();
+            if(result!=null && double.TryParse(result.ToString(),out tecaj))
+            {
+                return tecaj;
+            }
+
+            conn.Close();
+            
+            
+            return 0;
+        }
+
     }
 }
