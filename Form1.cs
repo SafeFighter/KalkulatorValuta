@@ -46,10 +46,13 @@ namespace KalkulatorValuta
         private void button1_Click(object sender, EventArgs e)
         {
             string unos = textBox1.Text;
-            string valuta = comboBox2.Text;
+            double unosD;
+            if(double.TryParse(unos,out unosD)) { }
+            string valuta1 = comboBox1.Text;
+            string valuta2 = comboBox2.Text;
             double rez;
 
-            rez=GetExchangeRates(valuta);
+            rez = ConvertCurrency(unosD, valuta1, valuta2);
             textBox2.Text = rez.ToString();
         }
     
@@ -75,6 +78,24 @@ namespace KalkulatorValuta
             
             
             return 0;
+        }
+
+        private double ConvertCurrency(double ammount,string from, string to)
+        {
+            if(from==to) return ammount;
+
+            double tecajFrom = GetExchangeRates(from);
+            double tecajTo = GetExchangeRates(to);
+
+            if(tecajFrom==0 || tecajTo == 0)
+            {
+                MessageBox.Show("Greska");
+            }
+
+            double ammountInReferenceCurrency = ammount / tecajFrom;
+            double result = ammountInReferenceCurrency * tecajTo;
+
+            return result;
         }
 
     }
